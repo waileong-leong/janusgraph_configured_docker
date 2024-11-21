@@ -3,11 +3,11 @@ FROM janusgraph/janusgraph:1.1.0
 # Download and replace libraries
 RUN mkdir -p /tmp/newlibs && \
     cd /tmp/newlibs && \
-    wget https://repo1.maven.org/maven2/org/janusgraph/scylla-hadoop-util/1.0.0/scylla-hadoop-util-1.0.0.jar && \
-    wget https://repo1.maven.org/maven2/org/janusgraph/janusgraph-scylla/1.0.0/janusgraph-scylla-1.0.0.jar && \
+    wget https://repo1.maven.org/maven2/org/janusgraph/scylla-hadoop-util/1.1.0/scylla-hadoop-util-1.1.0.jar && \
+    wget https://repo1.maven.org/maven2/org/janusgraph/janusgraph-scylla/1.1.0/janusgraph-scylla-1.1.0.jar && \
     wget https://repo1.maven.org/maven2/com/scylladb/java-driver-core/4.17.0.1/java-driver-core-4.17.0.1.jar && \
-    wget https://repo1.maven.org/maven2/com/scylladb/java-driver-query-builder/4.17.0.1/java-driver-query-builder-4.17.0.1.jar && \
-    wget https://repo1.maven.org/maven2/com/scylladb/scylla-driver-core/3.11.5.3/scylla-driver-core-3.11.5.3.jar
+    wget https://repo1.maven.org/maven2/com/scylladb/java-driver-query-builder/4.18.0.1/java-driver-query-builder-4.18.0.1.jar && \
+    wget https://repo1.maven.org/maven2/com/scylladb/scylla-driver-core/3.11.2.4/scylla-driver-core-3.11.2.4.jar
 
 # Replace the libraries
 RUN rm /opt/janusgraph/lib/cassandra-hadoop-util-*.jar && \
