@@ -1,0 +1,94 @@
+# Copyright 2023 JanusGraph Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+version: "3"
+
+services:
+  janusgraph:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jce-janusgraph
+    hostname: jce-janusgraph
+    user: 999:999
+    ports:
+      - "8182:8182"
+    networks:
+      - jce-network
+    # healthcheck:
+    #   test: ["CMD", "bin/gremlin.sh", "-e", "scripts/remote-connect.groovy"]
+    #   interval: 10s
+    #   timeout: 30s
+    #   retries: 3
+    depends_on:
+      - scylladb
+      # - elasticsearch
+    volumes:
+      - "./conf:/etc/opt/janusgraph:ro"
+      # - "./conf/janusgraph-server.yaml:/etc/opt/janusgraph/janusgraph-server.yaml:ro"
+      # - "./conf/janusgraph.properties:/etc/opt/janusgraph/janusgraph.properties:ro"
+      - "./scripts:/opt/janusgraph/scripts:ro"
+      - janusgraph_data:/opt/janusgraph/data  
+    # entrypoint: ["/bin/bash", "-c", "chown -R 999:999 /etc/opt/janusgraph && /usr/local/bin/docker-entrypoint.sh"]
+
+  scylladb:
+    image: scylladb/scylla:latest
+    container_name: jce-scylladb
+    ports:
+      - "9042:9042"
+    networks:
+      - jce-network
+    command: --smp 1 --memory 750M --overprovisioned 1
+    volumes:
+      - scylla_data:/var/lib/scylla
+
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.5.3
+  #   container_name: jce-elastic
+  #   environment:
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #     - "http.host=0.0.0.0"
+  #     - "network.host=0.0.0.0"
+  #     - "transport.host=127.0.0.1"
+  #     - "cluster.name=docker-cluster"
+  #     - "xpack.security.enabled=false"
+  #     - "discovery.type=single-node"
+  #     - "cluster.routing.allocation.disk.threshold_enabled=false"
+  #   ports:
+  #     - "9200:9200"
+  #   networks:
+  #     - jce-network
+  #   volumes:
+  #     - elasticsearch_data:/usr/share/elasticsearch/data
+
+
+  # kibana:
+  #   container_name: kibana
+  #   image: docker.elastic.co/kibana/kibana:8.5.3
+  #   environment:
+  #     - ELASTICSEARCH_URL=http://elasticsearch:9200
+  #   ports:
+  #     - "5601:5601"
+  #   networks:
+  #     - jce-network
+  #   depends_on:
+  #     - elasticsearch
+
+networks:
+  jce-network:
+
+volumes:
+  janusgraph_data:
+  scylla_data:
+  # elasticsearch_data:
