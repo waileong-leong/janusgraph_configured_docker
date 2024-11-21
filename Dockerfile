@@ -1,4 +1,4 @@
-FROM janusgraph/janusgraph:1.1.0
+FROM janusgraph/janusgraph:1.0.0
 
 # Download and replace libraries
 RUN mkdir -p /tmp/newlibs && \
